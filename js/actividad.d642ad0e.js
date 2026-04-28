@@ -1,2 +1,114 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["actividad"],{"23d7":function(t,i,a){"use strict";(function(t){i["a"]={name:"Actividad",data:function(){return{globalData:t}}}}).call(this,a("c8ba"))},"3dec":function(t,i,a){"use strict";a("963f")},4298:function(t,i,a){"use strict";a.r(i);var e=function(){var t=this,i=t.$createElement,a=t._self._c||i;return a("div",{staticClass:"curso-main-container introduccion"},[a("BannerInterno"),a("div",{staticClass:"container tarjeta tarjeta--blanca p-4 p-md-5 mb-5"},[t._m(0),a("div",{staticClass:"row align-items-center justify-content-center"},[t._m(1),a("div",{staticClass:"col-12 col-md-7"},[a("hr",{staticClass:"line-100 bg-orange"}),a("div",{staticClass:"text-center p-2"},[a("h2",[t._v("¡Pon a prueba tu conocimiento! ")]),t._m(2),a("a",{staticClass:"styleButton",attrs:{href:t.obtenerLink("/actividad/index.html"),target:"_blank"}},[t._v("Iniciar ")])]),a("hr",{staticClass:"line-100 bg-orange"})])])])],1)},c=[function(){var t=this,i=t.$createElement,a=t._self._c||i;return a("div",{staticClass:"titulo-principal"},[a("div",{staticClass:"titulo-principal__numero"},[a("div",{staticClass:"h3"},[a("i",{staticClass:"fas fa-question-circle"})])]),a("div",{staticClass:"h3"},[t._v("Actividad didáctica")])])},function(){var t=this,i=t.$createElement,e=t._self._c||i;return e("div",{staticClass:"col-8 col-md-5 col-xl-4 mb-5"},[e("figure",[e("img",{attrs:{src:a("6d6e")}})])])},function(){var t=this,i=t.$createElement,a=t._self._c||i;return a("p",{staticClass:"mb-4"},[t._v("La siguiente actividad tiene como propósito validar los conocimientos relacionados con el tema "),a("strong",[t._v("La fase de elicitación de requisitos")]),t._v(".")])}],s=a("23d7"),n=s["a"],r=(a("3dec"),a("2877")),o=Object(r["a"])(n,e,c,!1,null,"6cf33a86",null);i["default"]=o.exports},"6d6e":function(t,i,a){t.exports=a.p+"img/img_actividad.9efcded1.svg"},"963f":function(t,i,a){}}]);
-//# sourceMappingURL=actividad.d642ad0e.js.map
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([
+  ["chunk-0206bfa0"],
+  {
+    ab14: function (t, e, i) {
+      "use strict";
+
+      e["a"] = {
+        data: () => ({
+          mainId: Math.floor(Math.random() * 10000000),
+          selected: 0,
+          elements: [],
+          stateStr: "",
+          rendered: false,
+          firstSelection: true,
+        }),
+
+        watch: {
+          menuState() {
+            this.domUpdated();
+          },
+        },
+
+        created() {
+          window.addEventListener("resize", this.domUpdated);
+        },
+
+        mounted() {
+          this.$nextTick(() => this.crearElementos());
+        },
+
+        computed: {
+          menuState() {
+            return this.$store.getters.isMenuOpen;
+          },
+
+          navObj() {
+            if (!this.elements.length || !this.secuencial) return {};
+
+            const idsArr = this.elements.map(elm => elm.id);
+            const idx = idsArr.indexOf(this.selected);
+
+            if (idx < 0) return {};
+
+            const nav = {};
+
+            if (idx === 0) {
+              nav.next = idsArr[idx + 1];
+            } else if (idx === idsArr.length - 1) {
+              nav.back = idsArr[idx - 1];
+            } else {
+              nav.next = idsArr[idx + 1];
+              nav.back = idsArr[idx - 1];
+            }
+
+            return nav;
+          },
+        },
+
+        beforeDestroy() {
+          window.removeEventListener("resize", this.domUpdated);
+        },
+
+        updated() {
+          this.$nextTick(() => {
+            if (this.getStateStr() !== this.stateStr) {
+              this.crearElementos();
+            }
+          });
+        },
+
+        methods: {
+          crearElementos() {
+            if (!this.$slots.default?.length) return [];
+
+            this.domUpdated();
+
+            this.elements = this.$slots.default.map((elemento, index) => {
+              const attrs = elemento.data?.attrs || {};
+
+              return {
+                id: this.mainId + index + 1,
+                elm: elemento.elm,
+                ...attrs,
+              };
+            });
+
+            if (this.firstSelection) {
+              this.selected = this.selected || this.elements[0].id;
+            }
+
+            this.stateStr = this.getStateStr();
+          },
+
+          getActiveHeight(id) {
+            return this.$refs[id][0].scrollHeight + "px";
+          },
+
+          getStateStr() {
+            return this.$slots.default
+              .map(elm => elm.elm.outerHTML)
+              .join("");
+          },
+
+          domUpdated() {
+            this.rendered = false;
+            setTimeout(() => {
+              this.rendered = true;
+            }, 100);
+          },
+        },
+      };
+    },
+  },
+]);
